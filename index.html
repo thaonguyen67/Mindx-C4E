@@ -3,9 +3,205 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Personal Expense Tracker</title>
+    <meta
+      name="description"
+      content="A fast, private, offline-friendly personal expense tracker (stored locally in your browser)."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
   </head>
   <body>
-    <script src="./ex03 2.js"></script>
+    <div class="app">
+      <header class="header">
+        <div class="brand">
+          <div class="brand__title">Personal Expense Tracker</div>
+          <div class="brand__subtitle">Private by default • saved in your browser</div>
+        </div>
+
+        <div class="header__actions">
+          <button id="exportJsonBtn" class="btn btn--ghost" type="button">
+            Export JSON
+          </button>
+          <button id="exportCsvBtn" class="btn btn--ghost" type="button">
+            Export CSV
+          </button>
+          <label class="btn btn--ghost" for="importFile">
+            Import
+          </label>
+          <input id="importFile" class="sr-only" type="file" accept="application/json" />
+          <button id="clearAllBtn" class="btn btn--danger" type="button">
+            Clear all
+          </button>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="panel panel--form" aria-label="Add or edit expense">
+          <h2 class="panel__title" id="formTitle">Add expense</h2>
+
+          <form id="expenseForm" class="form" autocomplete="off">
+            <input id="editingId" type="hidden" value="" />
+
+            <div class="form__row">
+              <label class="field">
+                <span class="field__label">Date</span>
+                <input id="dateInput" class="field__input" type="date" required />
+              </label>
+
+              <label class="field">
+                <span class="field__label">Amount</span>
+                <input
+                  id="amountInput"
+                  class="field__input"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  required
+                />
+              </label>
+            </div>
+
+            <div class="form__row">
+              <label class="field">
+                <span class="field__label">Category</span>
+                <select id="categoryInput" class="field__input" required>
+                  <option value="" selected disabled>Select a category</option>
+                  <option>Food</option>
+                  <option>Transport</option>
+                  <option>Housing</option>
+                  <option>Bills</option>
+                  <option>Shopping</option>
+                  <option>Health</option>
+                  <option>Entertainment</option>
+                  <option>Travel</option>
+                  <option>Education</option>
+                  <option>Gifts</option>
+                  <option>Other</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Currency</span>
+                <select id="currencyInput" class="field__input">
+                  <option value="USD" selected>USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="VND">VND</option>
+                  <option value="JPY">JPY</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field__label">Description</span>
+              <input
+                id="descriptionInput"
+                class="field__input"
+                type="text"
+                placeholder="e.g., groceries, taxi, rent…"
+                maxlength="120"
+              />
+            </label>
+
+            <div class="form__actions">
+              <button class="btn btn--primary" type="submit" id="saveBtn">Save</button>
+              <button class="btn" type="button" id="cancelEditBtn" hidden>Cancel edit</button>
+            </div>
+          </form>
+
+          <p class="hint" id="storageHint">
+            Data is stored locally (localStorage). Clearing browser data will remove it.
+          </p>
+        </section>
+
+        <section class="panel panel--summary" aria-label="Summary">
+          <div class="summary">
+            <div class="card">
+              <div class="card__label">This month</div>
+              <div class="card__value" id="monthTotal">$0.00</div>
+            </div>
+            <div class="card">
+              <div class="card__label">All time</div>
+              <div class="card__value" id="allTotal">$0.00</div>
+            </div>
+            <div class="card">
+              <div class="card__label">Count</div>
+              <div class="card__value" id="expenseCount">0</div>
+            </div>
+          </div>
+
+          <div class="breakdown">
+            <div class="breakdown__header">
+              <h2 class="panel__title">By category</h2>
+              <div class="muted" id="breakdownMeta"></div>
+            </div>
+            <div id="categoryBreakdown" class="breakdown__list" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <section class="panel panel--list" aria-label="Expenses list">
+          <div class="list__header">
+            <h2 class="panel__title">Expenses</h2>
+            <div class="filters">
+              <label class="field field--compact">
+                <span class="field__label">Month</span>
+                <input id="monthFilter" class="field__input" type="month" />
+              </label>
+              <label class="field field--compact">
+                <span class="field__label">Category</span>
+                <select id="categoryFilter" class="field__input">
+                  <option value="">All</option>
+                </select>
+              </label>
+              <label class="field field--compact">
+                <span class="field__label">Search</span>
+                <input
+                  id="searchFilter"
+                  class="field__input"
+                  type="search"
+                  placeholder="description…"
+                />
+              </label>
+              <label class="field field--compact">
+                <span class="field__label">Sort</span>
+                <select id="sortSelect" class="field__input">
+                  <option value="date_desc" selected>Date (new → old)</option>
+                  <option value="date_asc">Date (old → new)</option>
+                  <option value="amount_desc">Amount (high → low)</option>
+                  <option value="amount_asc">Amount (low → high)</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="tableWrap">
+            <table class="table" aria-describedby="tableHelp">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th class="table__num">Amount</th>
+                  <th class="table__actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expenseTbody"></tbody>
+            </table>
+            <div id="emptyState" class="empty" hidden>
+              No expenses match your filters.
+            </div>
+            <p id="tableHelp" class="sr-only">
+              Use the actions column to edit or delete an expense.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span class="muted">Tip: export regularly if this data matters to you.</span>
+      </footer>
+    </div>
   </body>
 </html>
