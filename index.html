@@ -3,9 +3,214 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Expense Tracker</title>
+    <meta
+      name="description"
+      content="Track personal expenses with a clean, modern interface."
+    />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <script src="./ex03 2.js"></script>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="app-header">
+      <div class="container">
+        <div class="brand">
+          <div class="brand__left">
+            <h1 class="brand__title">Personal Expense Tracker</h1>
+            <p class="brand__subtitle">
+              Add transactions, view totals, and keep your spending in check.
+            </p>
+          </div>
+          <div class="pill" aria-label="Status">
+            <span>Currency:</span> <code>USD</code>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="container">
+      <section class="card" aria-label="Summary">
+        <div class="card__header">
+          <h2 class="card__title">Summary</h2>
+          <p class="card__hint">A quick overview of your finances.</p>
+        </div>
+        <div class="card__body">
+          <div class="summary">
+            <div class="kpi kpi--brand">
+              <p class="kpi__label">Balance</p>
+              <p class="kpi__value"><span class="amount">$1,240.00</span></p>
+            </div>
+            <div class="kpi kpi--green">
+              <p class="kpi__label">Income</p>
+              <p class="kpi__value"><span class="amount">$2,000.00</span></p>
+            </div>
+            <div class="kpi kpi--red">
+              <p class="kpi__label">Expenses</p>
+              <p class="kpi__value"><span class="amount">$760.00</span></p>
+            </div>
+          </div>
+          <hr class="sep" />
+          <p class="small">
+            Tip: connect these numbers to your JS later (this is just a polished
+            layout + CSS).
+          </p>
+        </div>
+      </section>
+
+      <div class="grid" style="margin-top: 1.1rem">
+        <section class="card" aria-label="Add transaction">
+          <div class="card__header">
+            <h2 class="card__title">Add a transaction</h2>
+            <p class="card__hint">Log an expense or income in seconds.</p>
+          </div>
+          <div class="card__body">
+            <form class="form" action="#" method="post">
+              <div class="fields">
+                <div class="field">
+                  <label class="label" for="type">Type</label>
+                  <select class="select" id="type" name="type" required>
+                    <option value="expense" selected>Expense</option>
+                    <option value="income">Income</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="date">Date</label>
+                  <input class="input" id="date" name="date" type="date" />
+                </div>
+
+                <div class="field">
+                  <label class="label" for="category">Category</label>
+                  <select class="select" id="category" name="category">
+                    <option value="food">Food</option>
+                    <option value="transport">Transport</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="bills">Bills</option>
+                    <option value="health">Health</option>
+                    <option value="other" selected>Other</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="amount">Amount</label>
+                  <input
+                    class="input"
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    inputmode="decimal"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+
+                <div class="field field--full">
+                  <label class="label" for="note">Description</label>
+                  <input
+                    class="input"
+                    id="note"
+                    name="note"
+                    type="text"
+                    placeholder="e.g., Groceries at Walmart"
+                    maxlength="80"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <p class="meta">Transactions are stored by your JS.</p>
+                <div class="actions">
+                  <button class="btn btn--ghost" type="reset">Clear</button>
+                  <button class="btn btn--primary" type="submit">
+                    Add transaction
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Transactions">
+          <div class="card__header">
+            <h2 class="card__title">Transactions</h2>
+            <p class="card__hint">Filter and review recent activity.</p>
+          </div>
+          <div class="card__body">
+            <div class="toolbar">
+              <div class="field">
+                <label class="label" for="search">Search</label>
+                <input
+                  class="input"
+                  id="search"
+                  name="search"
+                  type="search"
+                  placeholder="Search by note or category"
+                />
+              </div>
+
+              <div class="actions" aria-label="Transaction actions">
+                <button class="btn btn--danger" type="button">Clear all</button>
+              </div>
+            </div>
+
+            <div style="height: 0.9rem"></div>
+
+            <div class="table-wrap" role="region" aria-label="Transactions table">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th style="text-align: right">Amount</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2025-12-16</td>
+                    <td><span class="badge">Expense</span></td>
+                    <td><span class="badge">Food</span></td>
+                    <td>Lunch</td>
+                    <td style="text-align: right">
+                      <span class="amount amount--neg">-$12.50</span>
+                    </td>
+                    <td style="text-align: right">
+                      <button class="btn btn--ghost" type="button">Delete</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2025-12-15</td>
+                    <td><span class="badge">Income</span></td>
+                    <td><span class="badge">Other</span></td>
+                    <td>Salary</td>
+                    <td style="text-align: right">
+                      <span class="amount amount--pos">+$2,000.00</span>
+                    </td>
+                    <td style="text-align: right">
+                      <button class="btn btn--ghost" type="button">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="small" style="margin: 0.9rem 0 0">
+              Next improvement: wire this table + summary to your JS storage.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="container">
+        Built with semantic HTML + responsive CSS.
+      </div>
+    </footer>
   </body>
 </html>
